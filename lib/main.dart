@@ -1,14 +1,20 @@
 import 'package:donor2/pages/BottomNav.dart';
 import 'package:donor2/pages/Leaderboard.dart';
+import 'package:donor2/pages/events.dart';
 import 'package:donor2/pages/history.dart';
 import 'package:donor2/pages/home2.dart';
+import 'package:donor2/pages/signinPage.dart';
 import 'package:donor2/pages/signin_screen.dart';
+import 'package:donor2/pages/signupPage.dart';
 import 'package:donor2/pages/signup_screen.dart';
+import 'package:donor2/pages/test.dart';
+import 'package:donor2/util/MongoDB.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await MongoDatabase.connect();
   Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -31,16 +37,17 @@ class MyApp extends StatelessWidget {
             ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 216, 64, 53)),
         useMaterial3: true,
       ),
-      home: const SignInScreen(),
+      home: const SigninPage(),
       initialRoute: '/signin', // Initial route is the Sign In page
       routes: {
-        '/signin': (context) => SignInScreen(),
+        '/signin': (context) => LoginPage(),
         '/signup': (context) => SignUpScreen(),
+        '/register': (context) => SignUpPage(),
         '/home': (context) => HomePage2(),
         '/navbar': (context) => BottomNav(),
         '/leaderboard': (context) => LeaderboardPage(),
         '/history': (context) => DonationHistory(),
-        // '/events': (context) => EventsPage(),
+        '/events': (context) => EventPage(),
       },
     );
   }

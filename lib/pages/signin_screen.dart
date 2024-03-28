@@ -113,7 +113,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       )
                           .then((value) {
                         print("sign in success");
-                        Navigator.pushReplacementNamed(context, '/home');
+                        Navigator.pushReplacementNamed(context, '/navbar');
                       }).onError((error, stackTrace) {
                         print("Error: ${error.toString()}");
                         // Handle sign-in error, you can display a message here

@@ -32,7 +32,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
     }
-    // You can add more email validation logic if needed
     return null;
   }
 
@@ -40,7 +39,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (value == null || value.isEmpty) {
       return 'Please enter your password';
     }
-    // You can add more password validation logic if needed
     return null;
   }
 
