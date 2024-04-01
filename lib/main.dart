@@ -2,12 +2,11 @@ import 'package:donor2/pages/BottomNav.dart';
 import 'package:donor2/pages/Leaderboard.dart';
 import 'package:donor2/pages/events.dart';
 import 'package:donor2/pages/history.dart';
-import 'package:donor2/pages/home2.dart';
+import 'package:donor2/pages/home.dart';
+import 'package:donor2/pages/profile.dart';
+import 'package:donor2/pages/signUpPage.dart';
 import 'package:donor2/pages/signinPage.dart';
-import 'package:donor2/pages/signin_screen.dart';
-import 'package:donor2/pages/signupPage.dart';
-import 'package:donor2/pages/signup_screen.dart';
-import 'package:donor2/pages/test.dart';
+
 import 'package:donor2/util/MongoDB.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -29,25 +28,25 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Manusath Derana',
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
             iconTheme: IconThemeData(color: Colors.black),
             color: Color.fromARGB(255, 237, 237, 237)),
-        scaffoldBackgroundColor: Color.fromARGB(255, 237, 237, 237),
-        colorScheme:
-            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 216, 64, 53)),
+        scaffoldBackgroundColor: const Color.fromARGB(255, 237, 237, 237),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 216, 64, 53)),
         useMaterial3: true,
       ),
-      home: const SigninPage(),
+      home: const SignInPage(),
       initialRoute: '/signin', // Initial route is the Sign In page
       routes: {
-        '/signin': (context) => LoginPage(),
-        '/signup': (context) => SignUpScreen(),
-        '/register': (context) => SignUpPage(),
-        '/home': (context) => HomePage2(),
-        '/navbar': (context) => BottomNav(),
+        '/signin': (context) => const SignInPage(),
+        '/signup': (context) => const SignUpPage(),
+        '/home': (context) => const HomePage(),
+        '/navbar': (context) => const BottomNav(),
         '/leaderboard': (context) => LeaderboardPage(),
-        '/history': (context) => DonationHistory(),
-        '/events': (context) => EventPage(),
+        '/history': (context) => const DonationHistory(),
+        '/events': (context) => const EventPage(),
+        '/profile': (context) => const ProfilePage(),
       },
     );
   }

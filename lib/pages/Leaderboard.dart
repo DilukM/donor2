@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:donor2/Services/retrieveUser.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LeaderboardPage extends StatefulWidget {
   @override
@@ -6,43 +10,43 @@ class LeaderboardPage extends StatefulWidget {
 }
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
-  List<Map<String, dynamic>> leaderboardData = [
-    {
-      'rank': 1,
-      'name': 'John Doe',
-      'score': 500,
-      'imageUrl':
-          'https://thumbs.dreamstime.com/b/unknown-male-avatar-profile-image-businessman-vector-unknown-male-avatar-profile-image-businessman-vector-profile-179373829.jpg'
-    },
-    {
-      'rank': 2,
-      'name': 'Jane Smith',
-      'score': 450,
-      'imageUrl':
-          'https://thumbs.dreamstime.com/b/unknown-male-avatar-profile-image-businessman-vector-unknown-male-avatar-profile-image-businessman-vector-profile-179373829.jpg'
-    },
-    {
-      'rank': 3,
-      'name': 'Bob Johnson',
-      'score': 400,
-      'imageUrl':
-          'https://thumbs.dreamstime.com/b/unknown-male-avatar-profile-image-businessman-vector-unknown-male-avatar-profile-image-businessman-vector-profile-179373829.jpg'
-    },
-    {
-      'rank': 4,
-      'name': 'Bob Johnson',
-      'score': 400,
-      'imageUrl':
-          'https://thumbs.dreamstime.com/b/unknown-male-avatar-profile-image-businessman-vector-unknown-male-avatar-profile-image-businessman-vector-profile-179373829.jpg'
-    },
-    {
-      'rank': 5,
-      'name': 'Bob Johnson',
-      'score': 400,
-      'imageUrl':
-          'https://thumbs.dreamstime.com/b/unknown-male-avatar-profile-image-businessman-vector-unknown-male-avatar-profile-image-businessman-vector-profile-179373829.jpg'
-    },
-  ];
+  List<Map<String, dynamic>> leaderboardData = [];
+
+  Future<void> _fetchLeaderboardData() async {
+    final url =
+        'http://192.168.1.163:5001/donors/gets'; // Replace with your API endpoint
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          leaderboardData =
+              data.map((item) => item as Map<String, dynamic>).toList();
+        });
+      } else {
+        print('Failed to load leaderboard data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching leaderboard data: $e');
+    }
+  }
+
+  Future<void> _loadUserInfo() async {
+    try {
+      // Call the function to fetch user data
+      Map<String, dynamic> userData = await getUserInfo();
+
+      // Update the currentUser map with the fetched data
+      setState(() {
+        currentUser['name'] = userData['name'];
+        currentUser['email'] = userData['email'];
+        currentUser['score'] = userData['score'];
+        currentUser['rank'] = userData['rank'];
+      });
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
 
   // Current user data
   Map<String, dynamic> currentUser = {
@@ -52,6 +56,13 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     'imageUrl':
         'https://thumbs.dreamstime.com/b/unknown-male-avatar-profile-image-businessman-vector-unknown-male-avatar-profile-image-businessman-vector-profile-179373829.jpg',
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+    _fetchLeaderboardData();
+  }
 
   @override
   Widget build(BuildContext context) {
