@@ -24,7 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      const String url = 'http://192.168.1.163:5001/donors/add';
+      const String url = 'https://esm-deploy-server.vercel.app/donors/add';
 
       final Map<String, String> body = {
         'name': nameController.text,
@@ -242,9 +242,6 @@ class _SignUpPageState extends State<SignUpPage> {
                               return 'Please enter your password';
                             } else if (value.length < 6) {
                               return 'Password must have atleast 6 digits';
-                            } else if (passwordController !=
-                                cpasswordController) {
-                              return 'Passwords do not match';
                             }
                             return null;
                           },

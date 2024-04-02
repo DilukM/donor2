@@ -14,7 +14,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   Future<void> _fetchLeaderboardData() async {
     final url =
-        'http://192.168.1.163:5001/donors/gets'; // Replace with your API endpoint
+        'https://esm-deploy-server.vercel.app/donors/gets'; // Replace with your API endpoint
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

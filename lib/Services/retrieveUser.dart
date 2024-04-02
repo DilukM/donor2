@@ -23,8 +23,8 @@ Future<Map<String, dynamic>> getUserInfo() async {
     }
   }
   // Make an HTTP request to fetch user data based on the userId
-  final response = await http
-      .get(Uri.parse('http://192.168.1.163:5001/donors/get/$donorID'));
+  final response = await http.get(
+      Uri.parse('https://esm-deploy-server.vercel.app/donors/get/$donorID'));
 
   if (response.statusCode == 200) {
     // Parse the response JSON
@@ -36,8 +36,8 @@ Future<Map<String, dynamic>> getUserInfo() async {
 }
 
 Future<Map<String, dynamic>> getDonors() async {
-  final response =
-      await http.get(Uri.parse('http://192.168.1.163:5001/donors/gets'));
+  final response = await http
+      .get(Uri.parse('https://esm-deploy-server.vercel.app/donors/gets'));
 
   if (response.statusCode == 200) {
     // Parse the response JSON
