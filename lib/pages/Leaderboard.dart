@@ -68,6 +68,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Leaderboard',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -75,7 +76,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -142,16 +143,20 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   return Container(
                     color: index % 2 == 0 ? Colors.red[100] : Colors.white,
                     child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            leaderboardData[index]['imageUrl'] ?? ''),
-                      ),
                       title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(leaderboardData[index]['rank'].toString(),
                               style: TextStyle(color: Colors.red)),
-                          Text(leaderboardData[index]['name'] ?? ''),
+                          // CircleAvatar(
+                          //   backgroundImage: NetworkImage(
+                          //       leaderboardData[index]['imageUrl'] ?? ''),
+                          // ),
+                          Container(
+                              width: MediaQuery.of(context).size.width / 3,
+                              child: Center(
+                                  child: Text(
+                                      leaderboardData[index]['name'] ?? ''))),
                           Text(leaderboardData[index]['score'].toString(),
                               style: TextStyle(color: Colors.red)),
                         ],

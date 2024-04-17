@@ -3,6 +3,7 @@ import 'package:donor2/pages/Leaderboard.dart';
 import 'package:donor2/pages/events.dart';
 import 'package:donor2/pages/history.dart';
 import 'package:donor2/pages/home.dart';
+import 'package:donor2/pages/settingsPage.dart';
 import 'package:flutter/material.dart';
 
 class BottomNav extends StatefulWidget {
@@ -21,30 +22,33 @@ class _BottomNavState extends State<BottomNav> {
   late LeaderboardPage leaderboard;
   late DonationHistory history;
   late EventPage event;
+  late SettingsPage settings;
 
   @override
   void initState() {
-    home = HomePage();
+    home = const HomePage();
     leaderboard = LeaderboardPage();
-    history = DonationHistory();
-    event = EventPage();
-    pages = [home, leaderboard, history, event];
+    history = const DonationHistory();
+    event = const EventPage();
+    settings = const SettingsPage();
+    pages = [home, leaderboard, history, event, settings];
     super.initState();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: CurvedNavigationBar(
           height: 65,
           backgroundColor: Colors.white.withOpacity(0),
-          color: Color.fromARGB(255, 208, 8, 68),
-          animationDuration: Duration(milliseconds: 500),
+          color: const Color.fromARGB(255, 208, 8, 68),
+          animationDuration: const Duration(milliseconds: 500),
           onTap: (int index) {
             setState(() {
               currentTabIndex = index;
             });
           },
-          items: [
+          items: const [
             Icon(
               Icons.home_outlined,
               color: Colors.white,
@@ -60,7 +64,11 @@ class _BottomNavState extends State<BottomNav> {
             Icon(
               Icons.event_available_outlined,
               color: Colors.white,
-            )
+            ),
+            Icon(
+              Icons.settings_outlined,
+              color: Colors.white,
+            ),
           ]),
       body: pages[currentTabIndex],
     );

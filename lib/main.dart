@@ -4,6 +4,7 @@ import 'package:donor2/pages/events.dart';
 import 'package:donor2/pages/history.dart';
 import 'package:donor2/pages/home.dart';
 import 'package:donor2/pages/profile.dart';
+import 'package:donor2/pages/settingsPage.dart';
 import 'package:donor2/pages/signUpPage.dart';
 import 'package:donor2/pages/signinPage.dart';
 
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 216, 64, 53)),
         useMaterial3: true,
       ),
-      home: const SignInPage(),
+
       initialRoute: '/signin', // Initial route is the Sign In page
       routes: {
         '/signin': (context) => const SignInPage(),
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/leaderboard': (context) => LeaderboardPage(),
         '/history': (context) => const DonationHistory(),
         '/events': (context) => const EventPage(),
+        '/settings': (context) => const SettingsPage(),
         '/profile': (context) => const ProfilePage(),
       },
     );

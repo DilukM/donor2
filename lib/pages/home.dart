@@ -5,11 +5,13 @@ import 'package:donor2/Services/retrieveUser.dart';
 import 'package:donor2/pages/BottomNav.dart';
 import 'package:donor2/reusable_widgets/circular_container.dart';
 import 'package:donor2/reusable_widgets/curved_edges.dart';
+import 'package:donor2/util/HomeCard.dart';
 import 'package:donor2/util/card_temp.dart';
 import 'package:donor2/util/listTile.dart';
 import 'package:flutter/material.dart';
 import 'package:glass/glass.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,6 +25,14 @@ class _HomeState extends State<HomePage> {
   final _controller = PageController();
   late Timer _timer;
   int _currentPage = 0;
+
+  List<_SalesData> data = [
+    _SalesData('Jan', 35),
+    _SalesData('Feb', 28),
+    _SalesData('Mar', 34),
+    _SalesData('Apr', 32),
+    _SalesData('May', 40)
+  ];
 
   Map<String, dynamic> currentUser = {
     'rank': 2,
@@ -141,13 +151,14 @@ class _HomeState extends State<HomePage> {
             ),
             Positioned(
               top: 100,
-              left: 15,
-              width: 380,
+              left: MediaQuery.of(context).size.width * 0.05,
+              width: MediaQuery.of(context).size.width * 0.9,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, '/profile');
+                  Navigator.pushNamed(context, '/profile');
                 },
                 child: Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 8),
                   decoration: BoxDecoration(
@@ -171,15 +182,11 @@ class _HomeState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Name: ${currentUser['name']}',
+                          Text(currentUser['name'],
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold)),
-                          Text('Email: ${currentUser['email']}',
-                              style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontWeight: FontWeight.bold)),
-                          Text('Score: ${currentUser['score']}',
+                          Text(currentUser['email'],
                               style: const TextStyle(
                                   color: Colors.white70,
                                   fontWeight: FontWeight.bold)),
@@ -232,57 +239,65 @@ class _HomeState extends State<HomePage> {
                   const SizedBox(
                     height: 30,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BottomNav()));
-                    },
-                    child: const listTile(
-                      Imgpath: 'lib/images/analysis.png',
-                      Title: 'Notification',
-                      subTitle: 'Lorem Ipsum is simply dummy...',
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      HomeCard(
+                        title: 'Rs.20000',
+                        subTitle: 'Donations',
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        color: Color.fromARGB(255, 249, 216, 216),
+                      ),
+                      HomeCard(
+                        title: '20',
+                        subTitle: 'Rank',
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        color: Color.fromARGB(255, 216, 249, 221),
+                      ),
+                    ],
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BottomNav()));
-                    },
-                    child: const listTile(
-                      Imgpath: 'lib/images/analysis.png',
-                      Title: 'Notification',
-                      subTitle: 'Lorem Ipsum is simply dummy...',
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      HomeCard(
+                        title: '12',
+                        subTitle: 'Events',
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        color: Color.fromARGB(255, 244, 216, 249),
+                      ),
+                      HomeCard(
+                        title: currentUser['score'].toString(),
+                        subTitle: 'Score',
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        color: Color.fromARGB(255, 216, 216, 249),
+                      ),
+                    ],
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BottomNav()));
-                    },
-                    child: const listTile(
-                      Imgpath: 'lib/images/analysis.png',
-                      Title: 'Notification',
-                      subTitle: 'Lorem Ipsum is simply dummy...',
-                    ),
+                  SizedBox(
+                    height: 30,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BottomNav()));
-                    },
-                    child: const listTile(
-                      Imgpath: 'lib/images/analysis.png',
-                      Title: 'Notification',
-                      subTitle: 'Lorem Ipsum is simply dummy...',
-                    ),
+                  SfCartesianChart(
+                      palette: [Color.fromARGB(255, 208, 8, 68)],
+                      primaryXAxis: CategoryAxis(),
+                      // Chart title
+                      title: ChartTitle(text: 'Yearly donation analysis'),
+                      // Enable legend
+                      legend: Legend(isVisible: true),
+                      // Enable tooltip
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <CartesianSeries<_SalesData, String>>[
+                        LineSeries<_SalesData, String>(
+                            isVisibleInLegend: false,
+                            dataSource: data,
+                            xValueMapper: (_SalesData sales, _) => sales.year,
+                            yValueMapper: (_SalesData sales, _) => sales.sales,
+                            name: 'Donations',
+                            // Enable data label
+                            dataLabelSettings:
+                                DataLabelSettings(isVisible: true))
+                      ]),
+                  SizedBox(
+                    height: 30,
                   ),
                 ],
               ),
@@ -298,4 +313,11 @@ class _HomeState extends State<HomePage> {
       throw Exception('Could not launch url');
     }
   }
+}
+
+class _SalesData {
+  _SalesData(this.year, this.sales);
+
+  final String year;
+  final double sales;
 }

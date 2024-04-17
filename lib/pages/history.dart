@@ -44,7 +44,11 @@ class _DonationHistoryState extends State<DonationHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Donations'),
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Donations',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: Column(
@@ -63,7 +67,7 @@ class _DonationHistoryState extends State<DonationHistory> {
                       Color.fromARGB(255, 208, 8, 68), // Background color
                 ),
                 onPressed: () {
-                  // Navigator.pushReplacement(context,
+                  // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) => DonationPage()));
                 },
                 child: Text(

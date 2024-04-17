@@ -47,7 +47,7 @@ class _SignInPageState extends State<SignInPage> {
           textColor: Colors.white,
         );
         print("sign in success");
-        Navigator.pushReplacementNamed(context, '/navbar');
+        Navigator.pushNamed(context, '/navbar');
       } else {
         // Handle login failure
         final Map<String, dynamic> responseData = json.decode(response.body);

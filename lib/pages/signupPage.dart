@@ -52,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
           textColor: Colors.white,
         );
         print("sign up success");
-        Navigator.pushReplacementNamed(context, '/navbar');
+        Navigator.pushNamed(context, '/navbar');
       } else {
         // Handle login failure
         final Map<String, dynamic> responseData = json.decode(response.body);
