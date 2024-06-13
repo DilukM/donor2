@@ -9,6 +9,7 @@ import 'package:donor2/pages/signUpPage.dart';
 import 'package:donor2/pages/signinPage.dart';
 
 import 'package:donor2/util/MongoDB.dart';
+import 'package:donor2/util/themes/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -28,16 +29,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Manusath Derana',
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-            iconTheme: IconThemeData(color: Colors.black),
-            color: Color.fromARGB(255, 237, 237, 237)),
-        scaffoldBackgroundColor: const Color.fromARGB(255, 237, 237, 237),
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 216, 64, 53)),
-        useMaterial3: true,
-      ),
-
+      themeMode: ThemeMode.system,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.lightTheme,
       initialRoute: '/signin', // Initial route is the Sign In page
       routes: {
         '/signin': (context) => const SignInPage(),

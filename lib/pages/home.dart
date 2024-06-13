@@ -234,6 +234,8 @@ class _HomeState extends State<HomePage> {
                     controller: _controller,
                     count: 3,
                     effect: const ExpandingDotsEffect(
+                        dotHeight: 8,
+                        dotWidth: 8,
                         activeDotColor: Color.fromARGB(255, 208, 8, 68)),
                   ),
                   const SizedBox(

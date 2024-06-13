@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:donor2/util/eventCardTemp.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class DonationRecord {
   final String description;
@@ -23,30 +26,32 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
-  final List<DonationRecord> donationRecords = [
-    DonationRecord(
-      description: 'Event 1',
-      date: DateTime(2022, 2, 1),
-      amount: 'Colombo',
-      imgURL:
-          'https://www.telecomreviewasia.com/images/stories/2023/06/SLT-MOBITEL_Debuts_New_Operational_Headquarters.jpg',
-    ),
-    DonationRecord(
-      description: 'Event 2',
-      date: DateTime(2022, 2, 5),
-      amount: 'Colombo',
-      imgURL:
-          'https://www.telecomreviewasia.com/images/stories/2023/06/SLT-MOBITEL_Debuts_New_Operational_Headquarters.jpg',
-    ),
-    DonationRecord(
-      description: 'Event 3',
-      date: DateTime(2022, 2, 10),
-      amount: 'Colombo',
-      imgURL:
-          'https://www.telecomreviewasia.com/images/stories/2023/06/SLT-MOBITEL_Debuts_New_Operational_Headquarters.jpg',
-    ),
-    // Add more hardcoded donation records as needed
-  ];
+  List<Map<String, dynamic>> eventsData = [];
+
+  Future<void> _fetcheventsData() async {
+    final url = 'https://esm-deploy-server.vercel.app/donorevents/gets';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          eventsData =
+              data.map((item) => item as Map<String, dynamic>).toList();
+        });
+      } else {
+        print('Failed to load event data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching event data: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    _fetcheventsData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,17 +67,16 @@ class _EventPageState extends State<EventPage> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: donationRecords.length,
+              itemCount: eventsData.length,
               itemBuilder: (context, index) {
-                final donation = donationRecords[index];
                 return Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
                     child: event_card_temp(
-                        backgroundImageUrl: donation.imgURL,
-                        EventName: donation.description,
-                        Date: '${donation.date}',
-                        Location: donation.amount));
+                        backgroundImageUrl: '${eventsData[index]['cover']}',
+                        EventName: eventsData[index]['eventName'].toString(),
+                        Date: '${eventsData[index]['date']}',
+                        Location: '${eventsData[index]['location']}'));
               },
             ),
           ),

@@ -64,6 +64,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   _name = value;
                 },
               ),
+              SizedBox(
+                height: 10,
+              ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (value) {
@@ -76,6 +79,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 onChanged: (value) {
                   _email = value;
                 },
+              ),
+              SizedBox(
+                height: 10,
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Phone'),

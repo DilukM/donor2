@@ -152,15 +152,23 @@ class _SignInPageState extends State<SignInPage> {
                           controller: emailController,
                           decoration: const InputDecoration(
                               labelText: 'Email',
-                              prefixIconColor: Colors.white54,
+                              prefixIconColor: Colors.white,
+                              floatingLabelStyle:
+                                  TextStyle(color: Colors.white),
                               prefixIcon: Icon(Icons.email),
-                              labelStyle: TextStyle(color: Colors.white54),
+                              labelStyle: TextStyle(color: Colors.white),
                               focusedErrorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white)),
                               errorStyle: TextStyle(color: Colors.orange),
                               errorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.orange)),
-                              focusedBorder: OutlineInputBorder(
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.white),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10)),
@@ -186,8 +194,9 @@ class _SignInPageState extends State<SignInPage> {
                           controller: passwordController,
                           decoration: InputDecoration(
                             labelText: 'Password',
+                            floatingLabelStyle: TextStyle(color: Colors.white),
                             focusColor: Colors.white,
-                            prefixIconColor: Colors.white54,
+                            prefixIconColor: Colors.white,
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -202,13 +211,13 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                             ),
                             prefixIcon: const Icon(Icons.lock),
-                            labelStyle: const TextStyle(color: Colors.white54),
+                            labelStyle: const TextStyle(color: Colors.white),
                             errorStyle: const TextStyle(color: Colors.orange),
                             focusedErrorBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.white)),
                             errorBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.orange)),
-                            border: const OutlineInputBorder(
+                            enabledBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(10),
@@ -247,7 +256,6 @@ class _SignInPageState extends State<SignInPage> {
                         ),
                         const SizedBox(height: 16.0),
                         SizedBox(
-                          height: 50,
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: ElevatedButton(
                             style: const ButtonStyle(

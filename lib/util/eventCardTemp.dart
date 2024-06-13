@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class event_card_temp extends StatelessWidget {
-  final String backgroundImageUrl;
+  String? backgroundImageUrl;
   final String EventName;
   final String Date; // New property for the background image
   final String Location;
 
-  const event_card_temp({
+  event_card_temp({
     Key? key,
-    required this.backgroundImageUrl,
+    this.backgroundImageUrl,
     required this.EventName,
     required this.Date,
     required this.Location,
@@ -38,7 +38,8 @@ class event_card_temp extends StatelessWidget {
             )
           ],
           image: DecorationImage(
-              image: NetworkImage(backgroundImageUrl),
+              image: NetworkImage(backgroundImageUrl ??
+                  'https://www.telecomreviewasia.com/images/stories/2023/06/SLT-MOBITEL_Debuts_New_Operational_Headquarters.jpg'),
               fit: BoxFit.cover,
               opacity: 0.2),
           borderRadius: BorderRadius.circular(12),
