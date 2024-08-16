@@ -43,6 +43,7 @@ class HomeCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
+              textAlign: TextAlign.center,
               subTitle,
               style: TextStyle(
                 color: Color.fromARGB(255, 110, 110, 110),

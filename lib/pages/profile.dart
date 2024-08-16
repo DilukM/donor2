@@ -1,7 +1,9 @@
-import 'dart:io';
+import 'dart:convert';
 
+import 'package:donor2/Services/retrieveUser.dart';
+import 'package:donor2/util/underlineTextField.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -12,156 +14,232 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
+  bool isLoading = true;
 
-  String _name = '';
-  String _email = '';
-  String _phone = '';
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+
   DateTime _birthday = DateTime.now();
-  String _gender = '';
-  String _profilePicture = '';
 
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedImage = await ImagePicker().pickImage(source: source);
-    if (pickedImage != null) {
+  Future<void> _loadUserInfo() async {
+    try {
+      // Call the function to fetch user data
+      Map<String, dynamic> userData = await getUserInfo();
+
+      // Update the currentUser map with the fetched data
       setState(() {
-        _profilePicture = pickedImage.path;
+        _nameController.text = userData['name'] ?? '';
+        _emailController.text = userData['email'] ?? '';
+        _phoneController.text = userData['phone'] ?? '';
+        _genderController.text = userData['gender'] ?? '';
+
+        String birthdayString = userData['birthday'] ?? '';
+        if (birthdayString.isNotEmpty) {
+          _birthday = DateTime.parse(birthdayString);
+        } else {
+          _birthday =
+              DateTime.now(); // Default value if birthday is not available
+        }
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching user data: $e');
+      setState(() {
+        isLoading = false; // Set loading to false even if there's an error
       });
     }
   }
 
-  // Function to handle form submission
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // Save the form data to database or perform other actions
-      print('Form submitted!');
-      print('Name: $_name');
-      print('Email: $_email');
-      print('Phone: $_phone');
-      print('Birthday: $_birthday');
-      print('Gender: $_gender');
-      print('Profile Picture: $_profilePicture');
+  Future<void> _selectBirthday(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _birthday ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _birthday)
+      setState(() {
+        _birthday = picked;
+      });
+  }
+
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
     }
+    final RegExp emailRegex =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  String? validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your phone number';
+    }
+    final RegExp phoneRegex = RegExp(r'^\+?[0-9]{10,}$');
+    if (!phoneRegex.hasMatch(value)) {
+      return 'Please enter a valid phone number';
+    }
+    return null;
+  }
+
+  Future<void> _updateProfile() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+
+      Map<String, dynamic> userData = await getUserInfo();
+      String donorId = userData['_id'] ?? '';
+
+      final String url =
+          'https://esm-deploy-server.vercel.app/donors/update/$donorId';
+
+      String formattedBirthday = _birthday.toIso8601String();
+
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'phone': _phoneController.text,
+          'gender': _genderController.text,
+          'birthday': formattedBirthday,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Update successful, show a success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile updated successfully')),
+        );
+        Navigator.pop(context);
+      } else {
+        // Handle error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update profile')),
+        );
+      }
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  _name = value;
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  // Add email format validation if needed
-                  return null;
-                },
-                onChanged: (value) {
-                  _email = value;
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Phone'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  // Add phone number format validation if needed
-                  return null;
-                },
-                onChanged: (value) {
-                  _phone = value;
-                },
-              ),
-              ListTile(
-                title: Text('Birthday'),
-                subtitle: Text(
-                    '${_birthday.day}/${_birthday.month}/${_birthday.year}'),
-                onTap: () async {
-                  final selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: _birthday,
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-                  if (selectedDate != null) {
-                    setState(() {
-                      _birthday = selectedDate;
-                    });
-                  }
-                },
-              ),
-              ListTile(
-                title: Text('Profile Picture'),
-                subtitle: _profilePicture.isEmpty
-                    ? Text('No image selected')
-                    : Image.file(
-                        File(_profilePicture),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SafeArea(
-                        child: Wrap(
-                          children: [
-                            ListTile(
-                              leading: Icon(Icons.camera),
-                              title: Text('Take Photo'),
-                              onTap: () {
-                                _pickImage(ImageSource.camera);
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.photo_library),
-                              title: Text('Choose from Gallery'),
-                              onTap: () {
-                                _pickImage(ImageSource.gallery);
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Save'),
-              ),
-            ],
-          ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: [
+                    Text(
+                      'Personal details',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800]),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    CustomTextField(
+                      controller: _nameController,
+                      labelText: 'Name',
+                      prefixIcon: Icons.person,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your name';
+                        }
+                        return null;
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(12)),
+                        child: ListTile(
+                          title: Text('Birthday'),
+                          subtitle: Text(_birthday != null
+                              ? "${_birthday.toLocal()}".split(' ')[0]
+                              : 'No date selected'),
+                          trailing: Icon(Icons.cake),
+                          onTap: () => _selectBirthday(context),
+                        ),
+                      ),
+                    ),
+                    CustomTextField(
+                      controller: _genderController,
+                      labelText: 'Gender',
+                      prefixIcon: Icons.person_3,
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Contact Information',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800]),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    CustomTextField(
+                      controller: _emailController,
+                      labelText: 'Email',
+                      prefixIcon: Icons.email,
+                      validator: validateEmail,
+                    ),
+                    CustomTextField(
+                      controller: _phoneController,
+                      labelText: 'Phone Number',
+                      prefixIcon: Icons.phone,
+                      validator: validatePhoneNumber,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                      onPressed: _updateProfile,
+                      child: Text('Update'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

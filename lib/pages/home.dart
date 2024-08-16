@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomeState extends State<HomePage> {
   final _controller = PageController();
   late Timer _timer;
+  double totalCashDonations = 0;
   int _currentPage = 0;
 
   List<_SalesData> data = [
@@ -39,7 +40,7 @@ class _HomeState extends State<HomePage> {
     'name': '',
     'email': '',
     'score': 0,
-    'imageUrl':
+    'avatar':
         'https://c8.alamy.com/comp/2J3B2T7/3d-illustration-of-smiling-businessman-close-up-portrait-cute-cartoon-man-avatar-character-face-isolated-on-white-background-2J3B2T7.jpg',
   };
 
@@ -47,6 +48,7 @@ class _HomeState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadUserInfo();
+    saveDonationValues();
     _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
       if (_currentPage < 2) {
         _currentPage++;
@@ -77,10 +79,17 @@ class _HomeState extends State<HomePage> {
         currentUser['name'] = userData['name'];
         currentUser['email'] = userData['email'];
         currentUser['score'] = userData['score'];
+        currentUser['rank'] = userData['rank'];
+        currentUser['avatar'] = userData['avatar'];
       });
     } catch (e) {
       print('Error fetching user data: $e');
     }
+  }
+
+  Future<void> saveDonationValues() async {
+    // Save the total as a double
+    totalCashDonations = await getTotalCashDonations();
   }
 
   @override
@@ -172,7 +181,7 @@ class _HomeState extends State<HomePage> {
                     children: [
                       CircleAvatar(
                         foregroundImage:
-                            NetworkImage(currentUser['imageUrl'] ?? ''),
+                            NetworkImage(currentUser['avatar'] ?? ''),
                         radius: 40,
                       ),
                       const SizedBox(
@@ -216,15 +225,15 @@ class _HomeState extends State<HomePage> {
                       children: const [
                         card_temp(
                           backgroundImageUrl:
-                              'https://www.telecomreviewasia.com/images/stories/2023/06/SLT-MOBITEL_Debuts_New_Operational_Headquarters.jpg',
+                              'https://firebasestorage.googleapis.com/v0/b/donor-82405.appspot.com/o/1570339181-A-seed-of-life-to-save-my-world-Be-a-part-of-world-record-B.jpg?alt=media&token=af95b6a7-2635-41ae-ae76-c4edef9c6971',
                         ),
                         card_temp(
                           backgroundImageUrl:
-                              'https://cdn.shortpixel.ai/spai/w_767+q_lossy+ret_img+to_webp/https://i0.wp.com/srilankatelecom.com/wp-content/uploads/2022/12/Dialog-Unlimited-Blaster-Package.jpg?fit=1024%2C576&ssl=1',
+                              'https://firebasestorage.googleapis.com/v0/b/donor-82405.appspot.com/o/1697273733-Ten-Million-Trees--Manusath-Derana-l.jpg?alt=media&token=db4a2f7c-09be-42ea-9c64-4a0e97120841',
                         ),
                         card_temp(
                           backgroundImageUrl:
-                              'https://cdn.shortpixel.ai/spai/w_767+q_lossy+ret_img+to_webp/https://i0.wp.com/srilankatelecom.com/wp-content/uploads/2022/12/Dialog-Unlimited-Blaster-Package.jpg?fit=1024%2C576&ssl=1',
+                              'https://firebasestorage.googleapis.com/v0/b/donor-82405.appspot.com/o/269600115_3068085770128814_180645266547271845_n.jpg?alt=media&token=c46e2925-4e87-41d3-8fb7-a8d0e8bd7ccf',
                         ),
                       ],
                     ),
@@ -245,13 +254,13 @@ class _HomeState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       HomeCard(
-                        title: 'Rs.20000',
-                        subTitle: 'Donations',
+                        title: '$totalCashDonations',
+                        subTitle: 'Cash Donations',
                         width: MediaQuery.of(context).size.width * 0.6,
                         color: Color.fromARGB(255, 249, 216, 216),
                       ),
                       HomeCard(
-                        title: '20',
+                        title: currentUser['rank'].toString(),
                         subTitle: 'Rank',
                         width: MediaQuery.of(context).size.width * 0.3,
                         color: Color.fromARGB(255, 216, 249, 221),
@@ -262,8 +271,8 @@ class _HomeState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       HomeCard(
-                        title: '12',
-                        subTitle: 'Events',
+                        title: '2',
+                        subTitle: 'Upcoming Events',
                         width: MediaQuery.of(context).size.width * 0.3,
                         color: Color.fromARGB(255, 244, 216, 249),
                       ),
@@ -278,29 +287,29 @@ class _HomeState extends State<HomePage> {
                   SizedBox(
                     height: 30,
                   ),
-                  SfCartesianChart(
-                      palette: [Color.fromARGB(255, 208, 8, 68)],
-                      primaryXAxis: CategoryAxis(),
-                      // Chart title
-                      title: ChartTitle(text: 'Yearly donation analysis'),
-                      // Enable legend
-                      legend: Legend(isVisible: true),
-                      // Enable tooltip
-                      tooltipBehavior: TooltipBehavior(enable: true),
-                      series: <CartesianSeries<_SalesData, String>>[
-                        LineSeries<_SalesData, String>(
-                            isVisibleInLegend: false,
-                            dataSource: data,
-                            xValueMapper: (_SalesData sales, _) => sales.year,
-                            yValueMapper: (_SalesData sales, _) => sales.sales,
-                            name: 'Donations',
-                            // Enable data label
-                            dataLabelSettings:
-                                DataLabelSettings(isVisible: true))
-                      ]),
-                  SizedBox(
-                    height: 30,
-                  ),
+                  // SfCartesianChart(
+                  //     palette: [Color.fromARGB(255, 208, 8, 68)],
+                  //     primaryXAxis: CategoryAxis(),
+                  //     // Chart title
+                  //     title: ChartTitle(text: 'Yearly donation analysis'),
+                  //     // Enable legend
+                  //     legend: Legend(isVisible: true),
+                  //     // Enable tooltip
+                  //     tooltipBehavior: TooltipBehavior(enable: true),
+                  //     series: <CartesianSeries<_SalesData, String>>[
+                  //       LineSeries<_SalesData, String>(
+                  //           isVisibleInLegend: false,
+                  //           dataSource: data,
+                  //           xValueMapper: (_SalesData sales, _) => sales.year,
+                  //           yValueMapper: (_SalesData sales, _) => sales.sales,
+                  //           name: 'Donations',
+                  //           // Enable data label
+                  //           dataLabelSettings:
+                  //               DataLabelSettings(isVisible: true))
+                  //     ]),
+                  // SizedBox(
+                  //   height: 30,
+                  // ),
                 ],
               ),
             ),

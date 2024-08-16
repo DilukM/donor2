@@ -22,6 +22,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         setState(() {
           leaderboardData =
               data.map((item) => item as Map<String, dynamic>).toList();
+          leaderboardData.sort((a, b) => a['rank'].compareTo(b['rank']));
         });
       } else {
         print('Failed to load leaderboard data: ${response.statusCode}');
@@ -42,6 +43,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         currentUser['email'] = userData['email'];
         currentUser['score'] = userData['score'];
         currentUser['rank'] = userData['rank'];
+        currentUser['avatar'] = userData['avatar'];
       });
     } catch (e) {
       print('Error fetching user data: $e');
@@ -53,8 +55,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     'rank': 2,
     'name': 'Your Name',
     'score': 480,
-    'imageUrl':
-        'https://thumbs.dreamstime.com/b/unknown-male-avatar-profile-image-businessman-vector-unknown-male-avatar-profile-image-businessman-vector-profile-179373829.jpg',
+    'avatar':
+        'https://firebasestorage.googleapis.com/v0/b/donor-82405.appspot.com/o/donorEvents%2Fdefault-profile-pic-e1513291410505.jpg?alt=media&token=801ac0da-bcc7-47d8-a901-b5df9b50c74d',
   };
 
   @override
@@ -90,8 +92,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(currentUser['imageUrl'] ?? ''),
+                    backgroundImage: NetworkImage(currentUser['avatar'] ?? ''),
                     radius: 70,
                   ),
                   Column(
@@ -141,7 +142,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 itemCount: leaderboardData.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    color: index % 2 == 0 ? Colors.red[100] : Colors.white,
+                    color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
                     child: ListTile(
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -156,6 +157,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                               width: MediaQuery.of(context).size.width / 3,
                               child: Center(
                                   child: Text(
+                                      textAlign: TextAlign.center,
                                       leaderboardData[index]['name'] ?? ''))),
                           Text(leaderboardData[index]['score'].toString(),
                               style: TextStyle(color: Colors.red)),

@@ -19,7 +19,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.3.0-145.0.dev <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -41,7 +41,7 @@ dependencies:
   rive: ^0.13.0
   google_nav_bar: ^5.0.6
   curved_navigation_bar: ^1.0.3
-
+  payhere_mobilesdk_flutter: ^3.0.10
   glass: ^2.0.0+1
   cloud_firestore: ^4.15.8
   url_launcher: ^6.2.5
@@ -53,6 +53,7 @@ dependencies:
   fluttertoast: ^8.2.4
   image_picker: ^1.0.7
   syncfusion_flutter_charts: ^25.1.40
+  firebase_storage: ^11.7.7
 
 dev_dependencies:
   flutter_test:
